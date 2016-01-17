@@ -1,0 +1,12 @@
+
+
+				DIGITAL CARD
+This is a simple banking mechanism program. This program allows you to have the functionalities of a most ATM cards.
+And we are calling it "Digital Card" .This digital card allows the customer to access his money ,check balance and other 
+ATM functionalities .It is unique from other banking methods because it uses a flash drive. Digital Card is password 
+protected and is confidential ,meaning customer info is kept private . Our  program has two main classes for its coding. 
+One for the banker  and the other is for the customer. The banker is the one handling the deposit to the card and 
+registration of the customer. And the customer withdraws money  using  his/here Digital card(flash). We mostly used the 
+concepts of exception handling to prevent crash and file for storing the information's ,Information's like customer name, 
+balance  and such. The coding consists of required object oriented principles. Each principle implemented were necessary. 
+WE TRIED TO MAKE OUR PROGRAM SIMPLE ,USER FRIENDLY  AND   SOLVE REAL WORLD PROBLEM.   
