@@ -1,0 +1,171 @@
+
+package user;
+
+import java.io.*;
+import java.util.*;
+
+public class User {
+    private static String pass = "";
+    private static String dir = "";
+    public static void main(String[] args) throws IOException, InterruptedException {
+        // TODO code application logic here
+        cheak();
+        //menu();
+    }
+
+    private static void menu() throws IOException, InterruptedException {
+        Scanner input = new Scanner(System.in);
+        System.out.println("1 TO VIEW BALANCE ");
+        System.out.println("2 TO WITHDROW ");
+        char ch = input.next().charAt(0);
+        switch(ch){
+            case '1':{
+                display();
+                break;
+            }
+            case '2':{
+                withdrow();
+                break;
+            }
+            default:{
+                System.err.println("INVALID CHOICE");
+                break;
+            }
+        }
+        menu();
+    }
+
+    private static void display() throws IOException {
+        File file = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\test.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String s;
+        while((s=br.readLine())!=null){
+           if(result(s, 2).equals(pass)){
+               System.out.println("NAME : "+result(s,0)+" "+result(s, 1));
+               System.out.println("REMAINING BALANCE : "+result(s,4));
+               br.close();
+               return;
+           }
+        }
+        br.close();
+        System.out.println("!!!SOME PROBLEM INCOUNTERED PLESS CHEAK TO CLOSER BRANC!!!");
+    }
+
+    private static void withdrow() throws IOException, InterruptedException{
+        File file = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\test.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String s;
+        boolean bool= false;
+        while((s=br.readLine())!=null){
+           if(result(s, 2).equals(pass)){
+               bool=true;
+               break;
+           }
+        }
+       
+        br.close();
+        if(bool){
+            remove(s);
+        }
+        else
+            System.out.println("!!!SOME PROBLEM INCOUNTERED PLESS CHEAK TO CLOSER BRANC!!!");
+        
+    }
+    private static void remove(String s) throws IOException, InterruptedException{
+        Scanner input = new Scanner(System.in);
+       File file = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\test.txt");
+        File tempFile = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\tempFile.txt");
+        tempFile.createNewFile();
+        BufferedReader br = new BufferedReader(new FileReader(file));   
+        BufferedWriter bw  = new BufferedWriter(new FileWriter(tempFile,true));
+        
+        System.out.print("ENTER HOW MUCH MONY : ");
+        float mony = input.nextFloat();
+        String line=null;
+        while((line= br.readLine())!=null){
+            //System.out.println(line);
+            if(line.equals(s)){
+                bw.write(result(s, 0)+" ");
+                bw.write(result(s, 1)+" ");
+                bw.write(result(s, 2)+" ");
+                bw.write(result(s, 3)+" ");
+               
+                float balance =Float.parseFloat(result(s, 4));
+                 if(balance>=0 && balance>mony){
+                    balance-=mony;
+                 }
+                 else{
+                     System.out.println("!!INCIFITIENT BALANCE !!!!");
+                     return;
+                 }
+                bw.write(""+balance);
+                bw.newLine();
+                break;
+            }
+            else{
+                bw.write(line);
+                bw.newLine();
+            }
+        }
+        bw.close();
+        br.close();
+        File file1 = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\test.txt");
+        if(!file.delete())
+            System.out.println("SOME PROBLEM INCOUNTERED !! ");
+        if(!tempFile.renameTo(file1));
+            System.out.println("!!UPDATE FINISHED!!");
+    }
+    
+    private static void cheak() throws InterruptedException, IOException {
+                File file = new File("");
+        System.out.println("!!!PLESS ENTER YOUR CARD/FLASH DRIVE!!!!!");
+        System.out.println("!!!MAKE SURE THE DIRECTORY NAME IS F\\!!!!!");
+        while(!(file.exists())){
+            char disk = 'F';
+            while(disk<'Z'){
+                file = new File(""+disk+":\\");
+                if(file.exists()){
+                    file = new File(""+disk+":\\test.txt");
+                    if(file.exists()){
+                        dir=file.toString();
+                        if(passWordCheak())
+                            menu();
+                        else {
+                            System.exit(0);
+                        }
+                    }
+                    else{
+                        System.err.println("CARD WITH OUT INFORMATION ....PLESS CHEAK TO CLOSER BRANCH");
+                        Thread.sleep(5000);
+                        System.exit(0);
+                    }
+                    break;
+                }
+                disk++;
+            } 
+        }
+    }
+    private static boolean passWordCheak() throws IOException {
+        Scanner input = new Scanner(System.in);
+        File file = new File(dir);
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        
+        System.out.print("ENTER YOUR PASSWORD : ");
+        pass = input.next();
+        if(br.readLine().equals(pass)){
+            br.close();
+            return true;
+        }
+        else{
+            System.err.println("!!!WRONG PASSWORD!!!");
+            br.close();
+            passWordCheak();
+        }
+        br.close();
+        return false;
+    }
+    public static String result(String s,int i){
+        List<String> tokens = Arrays.asList(s.toLowerCase().split(" "));
+        return tokens.get(i);
+    }
+}
