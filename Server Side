@@ -1,0 +1,183 @@
+
+package atm;
+
+import static com.sun.org.apache.regexp.internal.RETest.test;
+import java.io.*;
+import java.util.*;
+
+public class Atm {
+
+    
+    private static String dir = "";
+    public static void main(String[] args) throws IOException, InterruptedException {
+        menu();
+    }
+    
+    
+    private static void menu() throws IOException, InterruptedException{
+        Scanner input = new Scanner(System.in);        
+        System.out.println("PRESS 1 TO ADD NEW CUSTOMER ");
+        System.out.println("PRESS 2 TO VIEW ADDED CUSTOMER INFORMATION");
+        System.out.println("PRESS 3 TO DELETE A RECORD");
+        char ch = input.next().charAt(0);
+        switch(ch){
+            case '1':{
+                add();
+                break;
+            }
+            case '2':{
+                display();
+                menu();
+                break;
+            }
+            case '3':{
+                search();
+                menu();
+                break;
+            }
+            default :{
+                System.err.println("\tINCORECT CHOICE");
+                menu();
+                break;
+            }
+        }
+    }
+    
+        private static void search() throws IOException, InterruptedException{
+            Scanner input = new Scanner(System.in);        
+            File file = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\test.txt");
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String s;
+
+            System.out.println("ENTER ACCOUNT NUMBER : ");
+            String pass = input.next();
+            boolean bool= false;
+            while((s=br.readLine())!=null){
+               if(result(s, 3).equals(pass)){
+                   bool=true;
+                   break;
+               }
+            }
+
+            br.close();
+            if(bool){
+                remove(s);
+            }
+            else
+                System. err.println("!!!NO RECORD WITH THIS ACCOUNT NUMBER");
+        
+    }
+        private static void remove(String s) throws IOException, InterruptedException{
+            Scanner input = new Scanner(System.in);
+            File file = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\test.txt");
+            File tempFile = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\tempFile.txt");
+            tempFile.createNewFile();
+            BufferedReader br = new BufferedReader(new FileReader(file));   
+            BufferedWriter bw  = new BufferedWriter(new FileWriter(tempFile,true));
+
+            
+            String line=null;
+            while((line= br.readLine())!=null){
+                //System.out.println(line);
+                if(line.equals(s)){
+                    continue;
+                }
+                else{
+                    bw.write(line);
+                    bw.newLine();
+                }
+            }
+            bw.close();
+            br.close();
+            File file1 = new File("C:\\Users\\Yonii\\Documents\\NetBeansProjects\\atm\\test.txt");
+            if(!file.delete())
+                System.out.println("SOME PROBLEM INCOUNTERED !! ");
+            if(!tempFile.renameTo(file1));
+                System.out.println("!!UPDATE FINISHED!!");
+    }
+    
+    
+    private static void add() throws IOException, InterruptedException {
+        Scanner input = new Scanner(System.in);
+        if(cheak()){
+            File file = new File("test.txt");
+            //file.createNewFile();
+            //File file = new File("F:\\test.txt");
+            BufferedWriter bw  = new BufferedWriter(new FileWriter(file,true));
+            System.out.print("ENTER CUSTOMER FIRST NAME : ");
+            String fname = input.next();
+            System.out.print("ENTER CUSTOMER LAST NAME : ");
+            String lname = input.next();
+            System.out.print("ENTER CUSTOMER PASSWORD : ");
+            String pass = input.next();
+            System.out.print("ENTER CUSTOMER ACOUNT NUMBER : ");
+            String acountNo = input.next();
+            System.out.print("ENTER CUSTOMER BALANCE : ");
+            float balance= input.nextFloat(); 
+            bw.write(fname+" ");
+            bw.write(lname+" ");
+            bw.write(pass+" ");
+            bw.write(acountNo+" ");
+            bw.write(""+balance);
+            bw.newLine();
+            writeInCard(pass);
+            bw.close();
+        }
+    }
+
+    private static void writeInCard(String pass)throws IOException {
+        File file = new File(dir);
+        file.createNewFile();
+        BufferedWriter bw  = new BufferedWriter(new FileWriter(file));
+        bw.write(""+pass);
+        bw.close();
+    }
+    
+    
+    private static boolean cheak() throws InterruptedException {
+        File file = new File("");
+        System.out.println("!!!PLESS ENTER YOUR CARD/FLASH DRIVE!!!!!");
+        while(!(file.exists())){
+            char disk = 'F';
+            while(disk<'Z'){
+                file = new File(""+disk+":\\");
+                if(file.exists()){
+                    file = new File(""+disk+":\\test.txt");
+                    if(file.exists()){
+                        System.err.println("ALREADY USED CARD DETECTED  ....");
+                        return false;
+                    }
+                    else{
+                        dir=file.toString();
+                       return true;
+                    }
+                }
+                disk++;
+            }
+        }
+        return false;
+    }
+    
+    
+    private static void display() throws IOException {
+        File file = new File("test.txt");
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        String s = "";
+        System.out.println("FIRST NAME \tLAST NAME\t PASSWORD\tACOUNT NUMBER\tBALANCE");
+        while((s=br.readLine())!=null){
+            System.out.print(result(s,0)+"\t\t");
+            System.out.print(result(s,1)+"\t\t");
+            System.out.print(result(s,2)+"\t\t");
+            System.out.print(result(s,3)+"\t\t");
+            System.out.println(result(s,4));
+        }
+        br.close();
+    }
+     public static String result(String s,int i){
+        List<String> tokens = Arrays.asList(s.toLowerCase().split(" "));
+        return tokens.get(i);
+    }
+   
+    
+    
+}
